@@ -1,13 +1,16 @@
-import thunk from 'redux-thunk'
-import { applyMiddleware, compose, createStore } from 'redux'
-
-let middleware = applyMiddleware(thunk)
-if (__DEBUG__) {
-  const devToolsExtension = window.devToolsExtension
-  if (typeof devToolsExtension === 'function') {
-    middleware = compose(middleware, devToolsExtension())
+class Calculator {
+  add(op1, op2) {
+    return op1 + op2
+  }
+  sub(op1, op2) {
+    return op1 - op2
+  }
+  mul(op1, op2) {
+    return op1 * op2
+  }
+  div(op1, op2) {
+    return op1 / op2
   }
 }
-const store = middleware(createStore)({}, {})
 
-store()
+export default Calculator

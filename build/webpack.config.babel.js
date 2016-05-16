@@ -8,7 +8,6 @@ debug('Create Webpack Configuration', config);
 debug('config.globals:', config.globals);
 
 const webpackConfig = {
-  name: '',
   resolve: {
     root: paths.src(),
     extendsions: ['', '.js']
@@ -27,7 +26,7 @@ const webpackConfig = {
       {
         test: /\.js$/,
         loaders: ['babel-loader', 'eslint'],
-        exclude: /node_modules/
+        exclude: /[^src]/
       }
     ]
   },

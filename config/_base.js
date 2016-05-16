@@ -15,6 +15,11 @@ const config = {
 
   host: 'localhost',
   port: process.env.PORT || 4000,
+  coverage_enabled   : !!argv.watch,
+  coverage_reporters : [
+    { type : 'text-summary' },
+    { type : 'lcov', dir : 'coverage' }
+  ],
 }
 
 config.globals = {
