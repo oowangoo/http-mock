@@ -8,6 +8,10 @@
     "start": "NODE_ENV=development webpack-dev-server --config build/webpack.config.babel.js --hot --inline --port 4000"
   },
   "author": "",
+  "repository"": {
+    "type": "git",
+    "url": "git+https://github.com:oowangoo/redux-start-kit.git"
+  },
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.3.17",
