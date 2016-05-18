@@ -1,5 +1,5 @@
 {
-  "name": "webpack-start-kit",
+  "name": "http-mock",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -11,7 +11,7 @@
   "author": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com:oowangoo/webpack-start-kit.git"
+    "url": "git+https://github.com:oowangoo/http-mock.git"
   },
   "license": "ISC",
   "devDependencies": {
