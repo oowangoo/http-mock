@@ -20,21 +20,23 @@ const webpackConfig = {
     path: paths.base('dist'),
     publicPath: '/'
   },
-  devtool: "source-map",
+  // devtool: "source-map",
   module: {
+    preLoaders: [{
+      test: /\.js$/,
+      loader: 'eslint',
+      include: paths.src()
+    }],
     loaders: [
       {
         test: /\.js$/,
-        loaders: ['babel-loader', 'eslint'],
-        exclude: /[^src]/
+        loader: 'babel-loader',
+        include: paths.src()
       }
     ]
   },
   plugins: [
-    // new webpack.optimize.OccurrenceOrderPlugin(),
-    // new webpack.optimize.DedupePlugin(),
     new webpack.DefinePlugin(config.globals),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
   ]
 }
