@@ -1,16 +1,21 @@
-class Calculator {
-  add (op1, op2) {
-    return op1 + op2
-  }
-  sub (op1, op2) {
-    return op1 - op2
-  }
-  mul (op1, op2) {
-    return op1 * op2
-  }
-  div (op1, op2) {
-    return op1 / op2
-  }
+import Network from 'Network'
+import RulesManage from 'RulesManage'
+import calls from 'calls'
+
+
+function httpMock () {
+
+}
+// static props
+httpMock.calls = calls
+
+// static function
+httpMock.reset = function () {
+  RulesManage.reset()
+  calls.reset()
 }
 
-export default Calculator
+// lisnter XMLHttpRequest Call
+Network.init()
+
+export default httpMock
