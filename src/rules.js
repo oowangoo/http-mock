@@ -51,12 +51,12 @@ function createGetResponseText (t) {
 export class Rule {
   constructor (method, pathname, params, header) {
     this.method = method
-    this.pathMatch = createMatchFn(pathname) : defaultTest
+    this.pathMatch = pathname ? createMatchFn(pathname) : defaultTest
     this.paramsMatch = params ? createMatchFn(params) : defaultTest
     this.headerMatch = header ? createMatchFn(header) : defaultTest
   }
 
-  /***
+  /**
     config = {
       method,
       location: {
@@ -67,13 +67,14 @@ export class Rule {
       params,
       headrs
     }
-  ***/
+  **/
   isMatch (config) {
-    const { method, location: { pathname }, params, headrs }
-    return (this.method === method)
-      && this.pathMatch(pathname)
-      && this.paramsMatch(params)
-      && this.headerMatch(headrs)
+    const { method, location: { pathname }, params, headrs } = config
+    return (this.method === method &&
+      this.pathMatch(pathname) &&
+      this.paramsMatch(params) &&
+      this.headerMatch(headrs)
+    )
   }
 
   respond (status, text) {

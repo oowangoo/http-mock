@@ -12,5 +12,6 @@
     "__DEBUG__": false
   },
   "rules": {
+    comma-dangle: ["error", "always-multiline"]
   }
 }

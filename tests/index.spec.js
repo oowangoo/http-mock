@@ -41,7 +41,7 @@ describe('index', function () {
       text: 'demo',
       url: 'http://example.com/demo',
       host: 'http://example.com',
-      path: '/demo'
+      path: '/demo',
     }
     HttpMock(m.host)
       .when('get', m.path).respond(m.status, m.text)

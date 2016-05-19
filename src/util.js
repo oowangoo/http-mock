@@ -5,8 +5,8 @@ export function isRegExp (value) {
   return toString.call(value) === '[object RegExp]'
 }
 export function isString (value) { return typeof value === 'string' }
-export function isObject(value) {
-  return value !== null && typeof value === 'object';
+export function isObject (value) {
+  return value !== null && typeof value === 'object'
 }
 export const isArray = Array.isArray
 

@@ -26,7 +26,7 @@ describe('Network', function () {
     network.setRequestHeader('key2', 'value2')
     expect(network.getAllResponseHeaders).toEqual({
       key: 'value',
-      key2: 'value2'
+      key2: 'value2',
     })
   })
 
@@ -66,7 +66,7 @@ describe('Network', function () {
 
     const response = {
       status: 400,
-      text: 'word'
+      text: 'word',
     }
     const rules = Manage.createRules(domain)
     const r = rules.createRule(method, '/demo')

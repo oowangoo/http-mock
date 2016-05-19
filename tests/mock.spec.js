@@ -11,7 +11,7 @@ describe('Mock', function () {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100
   })
 
-  afterAll(function (){
+  afterAll(function () {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = DEFAULT_TIMEOUT_INTERVAL
   })
 
@@ -21,8 +21,8 @@ describe('Mock', function () {
       expect(text).toEqual(mock.response)
     }
 
-    function createIt(response) {
-      return function (done){
+    function createIt (response) {
+      return function (done) {
         const mock = new Mock(response.status, response.text)
         const onload = jasmine.createSpy('onload')
         const onerror = jasmine.createSpy('onerror')
@@ -38,7 +38,7 @@ describe('Mock', function () {
             expect(onload.calls.count()).toEqual(1)
             expect(onerror).not.toHaveBeenCalled()
 
-            if (isResponseToEqual(response, m)){
+            if (isResponseToEqual(response, m)) {
               done()
             } else {
               done.fail(`response: ${response} unequal ${m.response}`)
@@ -56,19 +56,18 @@ describe('Mock', function () {
 
     const responses = [
       { text: 'this is 200', status: '200' },
-      { text: 'this is 400', status: 400}
+      { text: 'this is 400', status: 400 },
     ]
 
     responses.forEach((response) => {
       it(`${response.status}`, createIt(response))
     })
-
   })
 
   it('Abort', function (done) {
     const mock = new Mock(200, 'it not work', 1000)
-    const onload = jasmine.createSpy("onload")
-    const onerror = jasmine.createSpy("onerror")
+    const onload = jasmine.createSpy('onload')
+    const onerror = jasmine.createSpy('onerror')
     mock.open()
 
     mock.onload = onload
@@ -92,5 +91,4 @@ describe('Mock', function () {
     expect(onload).not.toHaveBeenCalled()
     expect(onerror).not.toHaveBeenCalled()
   })
-
 })

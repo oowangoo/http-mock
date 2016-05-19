@@ -30,11 +30,11 @@ function formatUrl (url) {
     href: url,
     hostname,
     pathname,
-    query: getQuery(url)
+    query: getQuery(url),
   }
 }
 
-/***
+/**
   config = {
     method,
     location: {
@@ -45,13 +45,13 @@ function formatUrl (url) {
     params,
     headrs
   }
-***/
+**/
 const queryWithParams = ['get', 'patch']
 export function createHttpConfig (method, href, params, headers) {
   const config = {
     method,
     location: formatUrl(href),
-    headers
+    headers,
   }
   if (queryWithParams.includes(method)) {
     config.params = config.location.query

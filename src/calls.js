@@ -3,7 +3,7 @@ export class Calls {
   unmatched = 0
 
   constructor () {
-    reset()
+    this.reset()
   }
 
   addMatched () {

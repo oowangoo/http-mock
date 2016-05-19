@@ -22,19 +22,19 @@ describe('Rule', function () {
       function check (r, skipSub) {
         expect(r.isMatch({
           method: 'get',
-          location: { pathanme: path }
+          location: { pathanme: path },
         })).toBeTruthy()
 
         // sub path
         !skipSub && expect(r.isMatch({
           method: 'get',
-          location: { pathanme: `${path}/other` }
+          location: { pathanme: `${path}/other` },
         })).toBeFalsy()
 
         // other path
         expect(r.isMatch({
           method: 'get',
-          location: { pathanme: otherPath }
+          location: { pathanme: otherPath },
         })).toBeFalsy()
       }
       it('string', function () {
@@ -50,7 +50,7 @@ describe('Rule', function () {
         // sub path, matched
         expect(rule2.isMatch({
           method: 'get',
-          location: { pathanme: `${path}/other` }
+          location: { pathanme: `${path}/other` },
         })).toBeTruthy()
       })
       it('function', function () {
@@ -72,7 +72,7 @@ describe('Rule', function () {
         const rule = new Rule('get', null, isParamsEqual)
         expect(rule.isMatch({
           method: 'get',
-          params: { key: '1' }
+          params: { key: '1' },
         })).toBeTruthy()
       })
       it('object', function () {
@@ -80,12 +80,12 @@ describe('Rule', function () {
         const rule2 = new Rule('get', null, { key: '1', key2: '2' })
         expect(rule2.isMatch({
           method: 'get',
-          params: { key: '1', key2: '2' }
+          params: { key: '1', key2: '2' },
         })).toBeTruthy()
         // contain, false
         expect(rule2.isMatch({
           method: 'get',
-          params: { key: '1' }
+          params: { key: '1' },
         })).toBeFalsy()
       })
     })
@@ -99,7 +99,7 @@ describe('Rule', function () {
         const rule = new Rule('get', null, null, isHeadersEqual)
         expect(rule.isMatch({
           method: 'get',
-          headers: { key: '1' }
+          headers: { key: '1' },
         })).toBeTruthy()
       })
 
@@ -108,12 +108,12 @@ describe('Rule', function () {
         const rule2 = new Rule('get', null, null, { key: '1', key2: '2' })
         expect(rule2.isMatch({
           method: 'get',
-          headers: { key: '1', key2: '2' }
+          headers: { key: '1', key2: '2' },
         })).toBeTruthy()
         // contain, false
         expect(rule2.isMatch({
           method: 'get',
-          headers: { key: '1' }
+          headers: { key: '1' },
         })).toBeFalsy()
       })
     })
@@ -153,7 +153,7 @@ describe('Rules', function () {
       const rules = new Rules(domain)
       expect(rules.isMatch({ loaction: { href: domain } })).toBeTruthy()
       expect(rules.isMatch({
-        loaction: { href: `${domain}/demo` }
+        loaction: { href: `${domain}/demo` },
       })).toBeTruthy()
 
       expect(rules.isMatch({ loaction: { href: otherDomain } })).toBeFalsy()
@@ -162,11 +162,11 @@ describe('Rules', function () {
       const rules = new Rules(`${domain}/demo`)
 
       expect(rules.isMatch({
-        loaction: { href: `${domain}/demo` }
+        loaction: { href: `${domain}/demo` },
       })).toBeTruthy()
 
       expect(rules.isMatch({
-        loaction: { href: `${domain}/demo/other`
+        loaction: { href: `${domain}/demo/other`,
       }})).toBeTruthy()
 
       expect(rules.isMatch({ loaction: { href: domain } })).toBeFalsy()
@@ -210,8 +210,8 @@ describe('Rules', function () {
       location: {
         href: `${domain}${path}`,
         hostname: domain,
-        pathname: path
-      }
+        pathname: path,
+      },
     })
     expect(r).toBe(rule)
   })

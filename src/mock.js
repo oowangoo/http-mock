@@ -1,12 +1,12 @@
 // XMLHttpRequest mock
 function nextTick (fn, delay) {
-  const timer = setTimeout(fn, dealy || 0)
+  const timer = setTimeout(fn, delay || 0)
   return function clearTimer () {
     clearTimeout(timer)
   }
 }
 
-/***
+/** *
   props: {
     private:
        _response: object
@@ -17,11 +17,11 @@ function nextTick (fn, delay) {
       status: response.status, default 0
   }
 ***/
-export default class Mock () {
+export default class Mock {
   constructor (status, response, delay) {
     this._response = {
       status,
-      body: response
+      body: response,
     }
     this.delay = delay || 0
     this.status = 0
@@ -40,7 +40,7 @@ export default class Mock () {
     if (this.timer) {
       this.timer()
     }
-    syncWithThis(this.onerror)
+    this.syncWithThis(this.onerror)
   }
   // default callback
   onload () {}

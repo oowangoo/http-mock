@@ -21,8 +21,8 @@ describe('rulesManage', function () {
       location: {
         href: 'http://example.com/demo',
         host: 'http://example.com',
-        pathname: '/demo'
-      }
+        pathname: '/demo',
+      },
     }
     const rule = Manage.findRule(httpConfig)
     expect(rule).toBe(r)

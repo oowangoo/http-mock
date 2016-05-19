@@ -1,5 +1,5 @@
 import RulesManage from './rulesManage'
-import Calls from './calls'
+import calls from './calls'
 import { createHttpConfig } from 'stuct'
 import Mock from 'mock'
 
@@ -81,7 +81,8 @@ export class NetWork {
   _sendAjax () {
     const httpConfig = createHttpConfig(this.method, this.url, this.params, this.headers)
     const rule = RulesManage.findRule(httpConfig)
-    let xhr;
+    rule ? calls.addMatched() : calls.addUnMatched()
+    let xhr
     if (!rule && NetWork.enabled) {
       xhr = new XMLHttpRequest()
     } else {

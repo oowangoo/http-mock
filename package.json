@@ -6,7 +6,9 @@
   "scripts": {
     "test": "babel-node ./node_modules/karma/bin/karma start build/karma.conf",
     "test:watch": "npm run test -- --watch",
-    "start": "NODE_ENV=development webpack-dev-server --config build/webpack.config.babel.js --hot --inline --port 4000"
+    "start": "NODE_ENV=development webpack-dev-server --config build/webpack.config.babel.js --hot --inline --port 4000",
+    "lint": "eslint ./src ./tests",
+    "lint:fix": "npm run lint -- --fix"
   },
   "author": "",
   "repository": {

@@ -16,7 +16,7 @@ function reset () {
 }
 
 function findRule (httpConfig) {
-  let r = undefined
+  let r
   RulesArray.some(function (rs) {
     r = rs.findMatchRule(httpConfig)
     return !!r
@@ -24,9 +24,10 @@ function findRule (httpConfig) {
   return r
 }
 
-export default {
+const manage = {
   createRules,
   getAllRules,
   reset,
   findRule,
 }
+export default manage
