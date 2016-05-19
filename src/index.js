@@ -1,5 +1,5 @@
-import Network from 'Network'
-import RulesManage from 'RulesManage'
+import Network from 'network'
+import RulesManage from 'rulesManage'
 import calls from 'calls'
 
 function httpMock (hostname) {

@@ -40,6 +40,7 @@ export default class Mock {
     if (this.timer) {
       this.timer()
     }
+    this.status = 0
     this.syncWithThis(this.onerror)
   }
   // default callback
@@ -53,7 +54,7 @@ export default class Mock {
   }
   _sendResponse () {
     this.status = this._response.status
-    this.response = this.responseText = this._repsonse.body
+    this.response = this.responseText = this._response.body
     this.onload()
   }
 }

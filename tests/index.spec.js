@@ -28,6 +28,7 @@ describe('index', function () {
 
           expect(onload.calls.count()).toEqual(1)
           expect(onerror).not.toHaveBeenCalled()
+          done()
         }
         setTimeout(checkDone, 0)
       }
@@ -45,7 +46,7 @@ describe('index', function () {
     }
     HttpMock(m.host)
       .when('get', m.path).respond(m.status, m.text)
-      .get('/demo2').respond(200, 'demo2')
+      .get('/demo').respond(200, 'demo2')
     checkXhr(m)
   })
 })

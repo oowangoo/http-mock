@@ -37,12 +37,8 @@ describe('Mock', function () {
             expect(m).toBe(mock)
             expect(onload.calls.count()).toEqual(1)
             expect(onerror).not.toHaveBeenCalled()
-
-            if (isResponseToEqual(response, m)) {
-              done()
-            } else {
-              done.fail(`response: ${response} unequal ${m.response}`)
-            }
+            isResponseToEqual(response, m)
+            done()
           }
           // sync done
           setTimeout(checkDone, 0)

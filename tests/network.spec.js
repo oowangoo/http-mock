@@ -14,6 +14,8 @@ describe('Network', function () {
   afterAll(function () {
     NetWork.enabled = true
     jasmine.DEFAULT_TIMEOUT_INTERVAL = DEFAULT_TIMEOUT_INTERVAL
+    calls.reset()
+    Manage.reset()
   })
 
   it('Get/Set Headers', function () {
@@ -24,7 +26,7 @@ describe('Network', function () {
     expect(network.getResponseHeader('key')).toEqual('value')
 
     network.setRequestHeader('key2', 'value2')
-    expect(network.getAllResponseHeaders).toEqual({
+    expect(network.getAllResponseHeaders()).toEqual({
       key: 'value',
       key2: 'value2',
     })
@@ -69,7 +71,7 @@ describe('Network', function () {
       text: 'word',
     }
     const rules = Manage.createRules(domain)
-    const r = rules.createRule(method, '/demo')
+    const r = rules.when(method, '/demo')
     r.respond(response.status, response.text)
 
     const network = new NetWork()
@@ -91,6 +93,7 @@ describe('Network', function () {
 
         expect(onload.calls.count()).toEqual(1)
         expect(onerror).not.toHaveBeenCalled()
+        done()
       }
       setTimeout(checkDone, 0)
     }

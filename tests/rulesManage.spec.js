@@ -15,12 +15,12 @@ describe('rulesManage', function () {
   })
   it('findRule', function () {
     const rules = Manage.createRules('http://example.com')
-    const r = rules.createRule('get', '/demo')
+    const r = rules.when('get', '/demo')
     const httpConfig = {
       method: 'get',
       location: {
         href: 'http://example.com/demo',
-        host: 'http://example.com',
+        hostname: 'http://example.com',
         pathname: '/demo',
       },
     }

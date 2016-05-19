@@ -39,7 +39,9 @@ export class NetWork {
     this.setReadyState(2)
     this.data = data
     try {
-      this.params = JSON.parse(data)
+      if (data) {
+        this.params = JSON.parse(data)
+      }
     } catch (e) {
       this.params = data
     }
@@ -81,7 +83,7 @@ export class NetWork {
   _sendAjax () {
     const httpConfig = createHttpConfig(this.method, this.url, this.params, this.headers)
     const rule = RulesManage.findRule(httpConfig)
-    rule ? calls.addMatched() : calls.addUnMatched()
+    rule ? calls.addMatched(httpConfig) : calls.addUnMatched(httpConfig)
     let xhr
     if (!rule && NetWork.enabled) {
       xhr = new XMLHttpRequest()
@@ -101,7 +103,7 @@ export class NetWork {
   // private
   bindCallback (xhr) {
     xhr.onerror = () => { this._callError() }
-    xhr.onerror = () => { this._callSuccess() }
+    xhr.onload = () => { this._callSuccess() }
   }
   setReadyState (v) {
     this.readyState = v

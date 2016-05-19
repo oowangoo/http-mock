@@ -1,21 +1,21 @@
 export class Calls {
-  matched = 0
-  unmatched = 0
+  // matched = []
+  // unmatched = []
 
   constructor () {
     this.reset()
   }
 
-  addMatched () {
-    this.matched++
+  addMatched (m) {
+    this.matched.push(m)
   }
-  addUnMatched () {
-    this.unmatched++
+  addUnMatched (m) {
+    this.unmatched.push(m)
   }
 
   reset () {
-    this.matched = 0
-    this.unmatched = 0
+    this.matched = []
+    this.unmatched = []
   }
 }
 

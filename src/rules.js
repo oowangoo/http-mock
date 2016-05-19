@@ -57,23 +57,15 @@ export class Rule {
   }
 
   /**
-    config = {
-      method,
-      location: {
-        pathname,
-        href,
-        hostname
-      },
-      params,
-      headrs
-    }
+    httpConfig
   **/
   isMatch (config) {
-    const { method, location: { pathname }, params, headrs } = config
-    return (this.method === method &&
+    const { method, location, params, headers } = config
+    const pathname = location ? location.pathname : undefined
+    return ((this.method === 'all' || this.method === method) &&
       this.pathMatch(pathname) &&
       this.paramsMatch(params) &&
-      this.headerMatch(headrs)
+      this.headerMatch(headers)
     )
   }
 
@@ -82,6 +74,7 @@ export class Rule {
       status,
       getText: createGetResponseText(text),
     }
+    return this.$parent
   }
 
   getResponse (config) {
@@ -103,7 +96,7 @@ export class Rules {
   }
   // is prev match
   isMatch (config) {
-    return this.matchFn(this.hostname)
+    return this.matchFn(config.location.hostname)
   }
 
   findMatchRule (config) {
@@ -118,7 +111,10 @@ export class Rules {
 
   when (method, urlFn, paramsFn, headerFn) {
     // new Rule
-    return new Rule(method, urlFn, paramsFn, headerFn)
+    const rule = new Rule(method, urlFn, paramsFn, headerFn)
+    rule.$parent = this
+    this.rules.push(rule)
+    return rule
   }
 }
 export default Rules

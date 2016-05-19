@@ -22,19 +22,19 @@ describe('Rule', function () {
       function check (r, skipSub) {
         expect(r.isMatch({
           method: 'get',
-          location: { pathanme: path },
+          location: { pathname: path },
         })).toBeTruthy()
 
         // sub path
         !skipSub && expect(r.isMatch({
           method: 'get',
-          location: { pathanme: `${path}/other` },
+          location: { pathname: `${path}/other` },
         })).toBeFalsy()
 
         // other path
         expect(r.isMatch({
           method: 'get',
-          location: { pathanme: otherPath },
+          location: { pathname: otherPath },
         })).toBeFalsy()
       }
       it('string', function () {
@@ -50,7 +50,7 @@ describe('Rule', function () {
         // sub path, matched
         expect(rule2.isMatch({
           method: 'get',
-          location: { pathanme: `${path}/other` },
+          location: { pathname: `${path}/other` },
         })).toBeTruthy()
       })
       it('function', function () {
@@ -126,7 +126,7 @@ describe('Rule', function () {
       const rule = new Rule()
       rule.respond(200, text)
       const response = rule.getResponse()
-      expect(response.status).toEqual('200')
+      expect(response.status).toEqual(200)
       expect(response.text).toEqual(text)
     })
 
@@ -137,55 +137,51 @@ describe('Rule', function () {
       })
       const t = { location: { pathname: 'demo' } }
       const response = rule.getResponse(t)
-      expect(response.status).toEqual('300')
+      expect(response.status).toEqual(300)
       expect(response.text).toEqual('this path is demo')
     })
   })
 })
 describe('Rules', function () {
   const domain = 'http://example.com'
-  const otherDomain = 'http://example2.com'
+  const otherDomain = 'http://22.example.com'
 
   const path = '/demo'
 
   describe('IsMatch', function () {
     it('constructor: can string', function () {
       const rules = new Rules(domain)
-      expect(rules.isMatch({ loaction: { href: domain } })).toBeTruthy()
-      expect(rules.isMatch({
-        loaction: { href: `${domain}/demo` },
-      })).toBeTruthy()
-
-      expect(rules.isMatch({ loaction: { href: otherDomain } })).toBeFalsy()
+      expect(rules.isMatch({ location: { hostname: domain } })).toBeTruthy()
+      expect(rules.isMatch({ location: { hostname: otherDomain } })).toBeFalsy()
     })
     xit('constructor: can host with some path', function () {
       const rules = new Rules(`${domain}/demo`)
 
       expect(rules.isMatch({
-        loaction: { href: `${domain}/demo` },
+        location: { href: `${domain}/demo` },
       })).toBeTruthy()
 
       expect(rules.isMatch({
-        loaction: { href: `${domain}/demo/other`,
+        location: { href: `${domain}/demo/other`,
       }})).toBeTruthy()
 
-      expect(rules.isMatch({ loaction: { href: domain } })).toBeFalsy()
-      expect(rules.isMatch({ loaction: { href: otherDomain } })).toBeFalsy()
+      expect(rules.isMatch({ location: { href: domain } })).toBeFalsy()
+      expect(rules.isMatch({ location: { href: otherDomain } })).toBeFalsy()
     })
     it('constructor: can regexp', function () {
       const domainRegexp = /example\.com/
       const rules = new Rules(domainRegexp)
-      expect(rules.isMatch({ loaction: { href: domain } })).toBeTruthy()
-      expect(rules.isMatch({ loaction: { href: otherDomain } })).toBeTruthy()
-      expect(rules.isMatch({ loaction: { href: 'http://ex.com' } })).toBeFalsy()
+      expect(rules.isMatch({ location: { hostname: domain } })).toBeTruthy()
+      expect(rules.isMatch({ location: { hostname: otherDomain } })).toBeTruthy()
+      expect(rules.isMatch({ location: { hostname: 'http://ex.com' } })).toBeFalsy()
     })
     it('constructor: can function', function () {
       function isInDomain () {
         return false
       }
       const rules = new Rules(isInDomain)
-      expect(rules.isMatch({ loaction: { href: domain } })).toBeFalsy()
-      expect(rules.isMatch({ loaction: { href: otherDomain } })).toBeFalsy()
+      expect(rules.isMatch({ location: { hostname: domain } })).toBeFalsy()
+      expect(rules.isMatch({ location: { hostname: otherDomain } })).toBeFalsy()
     })
     it('empty constructor must throw error', function () {
       expect(function () {

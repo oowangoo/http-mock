@@ -9,10 +9,14 @@ describe('Create Http Config', function () {
   it('get', function () {
     const config = createHttpConfig('get', 'http://flow.ci/projects?jobId=1111&build_id=222', { jobId: 1 })
 
-    expect(config.params).toEqual({ jobId: '111', build_id: '222' })
+    expect(config.params).toEqual({ jobId: '1111', build_id: '222' })
   })
   it('Method toLowerCase', function () {
     const config = createHttpConfig('GET', 'http://flow.ci/projects')
     expect(config.method).toEqual('get')
+  })
+  it('Hostname with proto', function () {
+    const config = createHttpConfig('GET', 'http://flow.ci/projects')
+    expect(config.location.hostname).toEqual('http://flow.ci')
   })
 })
