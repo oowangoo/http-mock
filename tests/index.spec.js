@@ -6,12 +6,11 @@ describe('index', function () {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100
   })
 
-  afterAll(function (){
+  afterAll(function () {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = DEFAULT_TIMEOUT_INTERVAL
   })
 
   it('base', function (done) {
-
     function checkXhr (config) {
       const onload = jasmine.createSpy('onload')
       const onerror = jasmine.createSpy('onerror')
@@ -25,7 +24,7 @@ describe('index', function () {
         const text = xhr.response
         function checkDone () {
           expect(status).toEqual(config.status)
-          expect(status).toEqual(config.text)
+          expect(text).toEqual(config.text)
 
           expect(onload.calls.count()).toEqual(1)
           expect(onerror).not.toHaveBeenCalled()

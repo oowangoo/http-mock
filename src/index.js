@@ -3,8 +3,8 @@ import RulesManage from 'RulesManage'
 import calls from 'calls'
 
 
-function httpMock () {
-
+function httpMock (hostname) {
+  return RulesManage.createRules(hostname)
 }
 // static props
 httpMock.calls = calls

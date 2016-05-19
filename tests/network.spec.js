@@ -1,4 +1,4 @@
-import network from 'network'
+import NetWork from 'network'
 import calls from 'calls'
 import Manage from 'rulesManage'
 
@@ -68,8 +68,8 @@ describe('Network', function () {
       status: 400,
       text: 'word'
     }
-    const rules = Manage.createRules('http://example.com')
-    const r = rules.createRule('get', '/demo')
+    const rules = Manage.createRules(domain)
+    const r = rules.createRule(method, '/demo')
     r.respond(response.status, response.text)
 
     const network = new NetWork()

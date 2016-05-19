@@ -1,12 +1,22 @@
 export class Calls {
-  constructor () {
+  matched = 0
+  unmatched = 0
 
+  constructor () {
+    reset()
   }
 
-  addMatched () {}
-  addUnMatched () {}
+  addMatched () {
+    this.matched++
+  }
+  addUnMatched () {
+    this.unmatched++
+  }
 
-  reset () {}
+  reset () {
+    this.matched = 0
+    this.unmatched = 0
+  }
 }
 
 const instance = new Calls()

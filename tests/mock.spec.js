@@ -16,7 +16,7 @@ describe('Mock', function () {
   })
 
   describe('Send', function () {
-    function isResponseToEqual (response: { status, text }, mock) {
+    function isResponseToEqual ({ status, text }, mock) {
       expect(status).toEqual(mock.status)
       expect(text).toEqual(mock.response)
     }
