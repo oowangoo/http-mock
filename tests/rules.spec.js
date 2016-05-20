@@ -1,4 +1,5 @@
 import { Rule, Rules } from 'rules'
+import { createHttpConfig } from 'stuct'
 
 describe('Rule', function () {
   describe('IsMatch', function () {
@@ -151,8 +152,8 @@ describe('Rules', function () {
   describe('IsMatch', function () {
     it('constructor: can string', function () {
       const rules = new Rules(domain)
-      expect(rules.isMatch({ location: { hostname: domain } })).toBeTruthy()
-      expect(rules.isMatch({ location: { hostname: otherDomain } })).toBeFalsy()
+      expect(rules.isMatch(createHttpConfig('get', `${domain}/demo.html`))).toBeTruthy()
+      expect(rules.isMatch(createHttpConfig('get', otherDomain))).toBeFalsy()
     })
     xit('constructor: can host with some path', function () {
       const rules = new Rules(`${domain}/demo`)
@@ -171,22 +172,27 @@ describe('Rules', function () {
     it('constructor: can regexp', function () {
       const domainRegexp = /example\.com/
       const rules = new Rules(domainRegexp)
-      expect(rules.isMatch({ location: { hostname: domain } })).toBeTruthy()
-      expect(rules.isMatch({ location: { hostname: otherDomain } })).toBeTruthy()
-      expect(rules.isMatch({ location: { hostname: 'http://ex.com' } })).toBeFalsy()
+      expect(rules.isMatch(createHttpConfig('get', domain))).toBeTruthy()
+      expect(rules.isMatch(createHttpConfig('get', otherDomain))).toBeTruthy()
+      expect(rules.isMatch(createHttpConfig('get', 'http://ex.com'))).toBeFalsy()
     })
     it('constructor: can function', function () {
       function isInDomain () {
         return false
       }
       const rules = new Rules(isInDomain)
-      expect(rules.isMatch({ location: { hostname: domain } })).toBeFalsy()
-      expect(rules.isMatch({ location: { hostname: otherDomain } })).toBeFalsy()
+      expect(rules.isMatch(createHttpConfig('get', domain))).toBeFalsy()
+      expect(rules.isMatch(createHttpConfig('get', otherDomain))).toBeFalsy()
     })
     it('empty constructor must throw error', function () {
       expect(function () {
         return new Rules()
       }).toThrow()
+    })
+    it('https, http', function () {
+      const rules = new Rules('https://example.com')
+      expect(rules.isMatch(createHttpConfig('get', 'https://example.com/demo.html'))).toBeTruthy()
+      expect(rules.isMatch(createHttpConfig('get', 'http://example.com'))).toBeFalsy()
     })
   })
 
@@ -201,14 +207,7 @@ describe('Rules', function () {
   it('findMatchRule', function () {
     const rules = new Rules(domain)
     const rule = rules.when('get', path)
-    const r = rules.findMatchRule({
-      method: 'get',
-      location: {
-        href: `${domain}${path}`,
-        hostname: domain,
-        pathname: path,
-      },
-    })
+    const r = rules.findMatchRule(createHttpConfig('get', `${domain}${path}`))
     expect(r).toBe(rule)
   })
 })

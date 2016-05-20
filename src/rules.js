@@ -92,7 +92,13 @@ export class Rules {
     HttpMethod.forEach((m) => {
       this[m] = this.when.bind(this, m)
     })
-    this.matchFn = createMatchFn(prevHref)
+    if (util.isString(prevHref)) {
+      this.matchFn = function (v) {
+        return v.indexOf(prevHref) === 0
+      }
+    } else {
+      this.matchFn = createMatchFn(prevHref)
+    }
   }
   // is prev match
   isMatch (config) {

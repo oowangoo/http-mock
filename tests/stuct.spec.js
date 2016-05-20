@@ -1,22 +1,37 @@
 import { createHttpConfig } from 'stuct'
 
-describe('Create Http Config', function () {
-  it('path with /', function () {
-    const config1 = createHttpConfig('get', 'http://flow.ci/projects/')
-    const config2 = createHttpConfig('get', 'http://flow.ci/projects')
-    expect(config1.pathname).toEqual(config2.pathname)
-  })
-  it('get', function () {
-    const config = createHttpConfig('get', 'http://flow.ci/projects?jobId=1111&build_id=222', { jobId: 1 })
-
-    expect(config.params).toEqual({ jobId: '1111', build_id: '222' })
-  })
-  it('Method toLowerCase', function () {
+describe('CreateHttpConfig', function () {
+  it('Method ToLower', function () {
     const config = createHttpConfig('GET', 'http://flow.ci/projects')
     expect(config.method).toEqual('get')
   })
-  it('Hostname with proto', function () {
-    const config = createHttpConfig('GET', 'http://flow.ci/projects')
-    expect(config.location.hostname).toEqual('http://flow.ci')
+  describe('Property Location', function () {
+    it('empty pathname', function () {
+      const config1 = createHttpConfig('get', 'http://flow.ci')
+      expect(config1.location.pathname).toEqual('/')
+    })
+    it('end with /', function () {
+      const config1 = createHttpConfig('get', 'http://flow.ci/projects/')
+      const config2 = createHttpConfig('get', 'http://flow.ci/projects')
+      expect(config1.location.pathname).toEqual('/projects')
+      expect(config1.location.pathname).toEqual(config2.location.pathname)
+    })
+    it('hostname with protocol', function () {
+      const config1 = createHttpConfig('get', 'http://flow.ci/projects/')
+      expect(config1.location.hostname).toEqual('http://flow.ci')
+
+      const config2 = createHttpConfig('get', 'https://flow.ci/projects/')
+      expect(config2.location.hostname).toEqual('https://flow.ci')
+    })
+    it('query', function () {
+      const config = createHttpConfig('get', 'http://flow.ci/projects?jobId=1111&build_id=222', { jobId: 1 })
+      expect(config.location.query).toEqual({ jobId: '1111', build_id: '222' })
+    })
+  })
+  it('Property Params', function () {
+    it('get query', function () {
+      const config = createHttpConfig('get', 'http://flow.ci/projects?jobId=1111&build_id=222', { jobId: 1 })
+      expect(config.location.query).toEqual(config.params)
+    })
   })
 })
