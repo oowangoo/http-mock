@@ -1,20 +1,5 @@
 import Mock from 'mock'
 describe('Mock', function () {
-  const DEFAULT_TIMEOUT_INTERVAL = jasmine.DEFAULT_TIMEOUT_INTERVAL
-
-  // it('Open', function () {
-  //   // do nothing
-  // })
-
-  // 设置超时时间为0.1s
-  beforeEach(function () {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000
-  })
-
-  afterAll(function () {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = DEFAULT_TIMEOUT_INTERVAL
-  })
-
   describe('Send', function () {
     function isResponseToEqual ({ status, text }, mock) {
       expect(status).toEqual(mock.status)
@@ -43,7 +28,10 @@ describe('Mock', function () {
           // sync done
           setTimeout(checkDone, 0)
         }
-        mock.onerror = onerror
+        mock.onerror = function () {
+          onerror()
+          done.fail('call onerror')
+        }
         mock.send()
         expect(onload).not.toHaveBeenCalled()
         expect(onerror).not.toHaveBeenCalled()
@@ -56,17 +44,20 @@ describe('Mock', function () {
     ]
 
     responses.forEach((response) => {
-      it(`${response.status}`, createIt(response))
+      it(`onload with status ${response.status}`, createIt(response))
     })
   })
 
-  it('Abort', function (done) {
+  it('Abort, call onerror', function (done) {
     const mock = new Mock(200, 'it not work', 1000)
     const onload = jasmine.createSpy('onload')
     const onerror = jasmine.createSpy('onerror')
     mock.open()
 
-    mock.onload = onload
+    mock.onload = function () {
+      onload()
+      done.fail('call onload')
+    }
     mock.onerror = function () {
       onerror()
       function checkDone () {
@@ -87,7 +78,7 @@ describe('Mock', function () {
     expect(onload).not.toHaveBeenCalled()
     expect(onerror).not.toHaveBeenCalled()
   })
-  it('Abort Before Send', function () {
+  it('Abort Before Send, do nothing', function () {
     const mock = new Mock(200, 'it not work', 1000)
     mock.abort()
   })
