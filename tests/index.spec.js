@@ -3,7 +3,7 @@ describe('index', function () {
   const DEFAULT_TIMEOUT_INTERVAL = jasmine.DEFAULT_TIMEOUT_INTERVAL
   // 设置超时时间为0.1s
   beforeEach(function () {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000
   })
 
   afterAll(function () {

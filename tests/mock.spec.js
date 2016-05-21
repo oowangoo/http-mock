@@ -8,7 +8,7 @@ describe('Mock', function () {
 
   // 设置超时时间为0.1s
   beforeEach(function () {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000
   })
 
   afterAll(function () {
@@ -86,5 +86,9 @@ describe('Mock', function () {
 
     expect(onload).not.toHaveBeenCalled()
     expect(onerror).not.toHaveBeenCalled()
+  })
+  it('Abort Before Send', function () {
+    const mock = new Mock(200, 'it not work', 1000)
+    mock.abort()
   })
 })

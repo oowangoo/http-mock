@@ -9,13 +9,48 @@ describe('Network', function () {
     calls.reset()
     Manage.reset()
     NetWork.enabled = true
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000
   })
   afterAll(function () {
     NetWork.enabled = true
     jasmine.DEFAULT_TIMEOUT_INTERVAL = DEFAULT_TIMEOUT_INTERVAL
     calls.reset()
     Manage.reset()
+  })
+  it('open()', function () {
+    const network = new NetWork()
+    // open
+    network.open('get', 'some')
+    network.open('post', 'other')
+    expect(network.method).toEqual('get')
+    expect(network.url).toEqual('some')
+  })
+
+  it('send()', function () {
+    const network = new NetWork()
+    NetWork.enabled = false
+    network.open('get', 'http://example.com')
+    network.send('is string')
+    expect(network.params).toEqual('is string')
+    expect(network.data).toEqual('is string')
+
+    network.send(JSON.stringify({ text: 1 }))
+    expect(network.params).toEqual('is string')
+    expect(network.data).toEqual('is string')
+    network.abort()
+  })
+
+  it('abort()', function () {
+    const network = new NetWork()
+
+    // const onload = jasmine.createSpy('onload')
+    // const onerror = jasmine.createSpy('onerror')
+
+    // network.onload = function
+    network.abort()
+
+    network.open('get', 'http://example.com')
+    network.abort()
   })
 
   it('Get/Set Headers', function () {
@@ -76,7 +111,10 @@ describe('Network', function () {
 
     const network = new NetWork()
 
-    network.onerror = onerror
+    network.onerror = function () {
+      onerror()
+      done.fail('Not Match Rule')
+    }
     network.onload = function () {
       onload()
       const xhr = this

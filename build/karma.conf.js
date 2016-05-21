@@ -50,14 +50,18 @@ const karmaConfig = {
 
 // isparta 与 eslint 有冲突. isparta 编出后的文件会跑 eslint， 暂时不进行覆盖率检查
 // add coverage if enabled
-// if (config.coverage_enabled) {
-//   karmaConfig.reporters.push('coverage');
-//   karmaConfig.webpack.module.preLoaders = [{
-//     test: /\.(js|jsx)$/,
-//     loader: 'isparta',
-//     include: new RegExp(config.src)
-//   }];
-// }
+if (config.coverage_enabled) {
+  karmaConfig.reporters.push('coverage');
+  karmaConfig.webpack.module.preLoaders = [{
+    test: /\.(js|jsx)$/,
+    loader: 'isparta',
+    include: new RegExp(config.src)
+  }, {
+    test: /\.js$/,
+    loader: 'eslint',
+    include: paths.src()
+  }];
+}
 
 // cannot use `export default` because of Karma.
 module.exports = (cfg) => cfg.set(karmaConfig);
