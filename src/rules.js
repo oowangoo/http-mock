@@ -74,7 +74,6 @@ export class Rule {
       status,
       getText: createGetResponseText(text),
     }
-    return this.$parent
   }
 
   getResponse (config) {
@@ -118,9 +117,13 @@ export class Rules {
   when (method, urlFn, paramsFn, headerFn) {
     // new Rule
     const rule = new Rule(method, urlFn, paramsFn, headerFn)
-    rule.$parent = this
     this.rules.push(rule)
-    return rule
+    return {
+      respond: (...args) => {
+        rule.respond.apply(rule, args)
+        return this
+      },
+    }
   }
 }
 export default Rules

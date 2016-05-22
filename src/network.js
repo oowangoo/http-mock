@@ -11,10 +11,10 @@ export class NetWork {
   status = 0
   // XMLHttpRequest method
   getAllResponseHeaders () {
-    return this.headers
+    return ''
   }
-  getResponseHeader (key) {
-    return this.headers ? this.headers[key] : undefined
+  getResponseHeader () {
+    return undefined
   }
   setRequestHeader (key, value) {
     this.headers = this.headers || {}
@@ -75,6 +75,7 @@ export class NetWork {
     fn()
   }
   _finishXhr () {
+    this.setReadyState(this.xhr.readyState || 4)
     this.status = this.xhr.status
     this.response = this.xhr.response
     this.responseText = this.xhr.responseText
@@ -102,8 +103,8 @@ export class NetWork {
   }
   // private
   bindCallback (xhr) {
-    xhr.onerror = () => { this._callError() }
     xhr.onload = () => { this._callSuccess() }
+    xhr.onerror = xhr.onabort = () => { this._callError() }
   }
   setReadyState (v) {
     this.readyState = v

@@ -1,145 +1,152 @@
 import NetWork from 'network'
-import calls from 'calls'
-import Manage from 'rulesManage'
+import HttpMock from 'index'
+
+const SuceessURL = 'http://api.fir.im'
+
+function checkCallbackEvent (network, onload, onerror) {
+  const spyOnload = jasmine.createSpy('spyOnload')
+  const spyOnerror = jasmine.createSpy('spyOnerror')
+  network.onload = function () {
+    spyOnload()
+
+    expect(spyOnload.calls.count()).toEqual(1)
+    expect(spyOnerror).not.toHaveBeenCalled()
+    expect(network).toBe(this)
+
+    onload && setTimeout(onload, 5)
+  }
+  network.onerror = function () {
+    spyOnerror()
+
+    expect(spyOnerror.calls.count()).toEqual(1)
+    expect(spyOnload).not.toHaveBeenCalled()
+
+    expect(network).toBe(this)
+    onerror && setTimeout(onerror, 5)
+  }
+  network.send()
+  expect(spyOnload).not.toHaveBeenCalled()
+  expect(spyOnerror).not.toHaveBeenCalled()
+}
 
 describe('Network', function () {
-  const DEFAULT_TIMEOUT_INTERVAL = jasmine.DEFAULT_TIMEOUT_INTERVAL
-
   beforeEach(function () {
-    calls.reset()
-    Manage.reset()
-    NetWork.enabled = true
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000
-  })
-  afterAll(function () {
-    NetWork.enabled = true
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = DEFAULT_TIMEOUT_INTERVAL
-    calls.reset()
-    Manage.reset()
-  })
-  it('open()', function () {
-    const network = new NetWork()
-    // open
-    network.open('get', 'some')
-    network.open('post', 'other')
-    expect(network.method).toEqual('get')
-    expect(network.url).toEqual('some')
-  })
-
-  it('send()', function () {
-    const network = new NetWork()
+    HttpMock.reset()
     NetWork.enabled = false
-    network.open('get', 'http://example.com')
-    network.send('is string')
-    expect(network.params).toEqual('is string')
-    expect(network.data).toEqual('is string')
-
-    network.send(JSON.stringify({ text: 1 }))
-    expect(network.params).toEqual('is string')
-    expect(network.data).toEqual('is string')
-    network.abort()
-  })
-
-  it('abort()', function () {
-    const network = new NetWork()
-
-    // const onload = jasmine.createSpy('onload')
-    // const onerror = jasmine.createSpy('onerror')
-
-    // network.onload = function
-    network.abort()
-
-    network.open('get', 'http://example.com')
-    network.abort()
-  })
-
-  it('Get/Set Headers', function () {
-    const network = new NetWork()
-    expect(network.getResponseHeader('key')).toBeUndefined()
-
-    network.setRequestHeader('key', 'value')
-    expect(network.getResponseHeader('key')).toEqual('value')
-
-    network.setRequestHeader('key2', 'value2')
-    expect(network.getAllResponseHeaders()).toEqual({
-      key: 'value',
-      key2: 'value2',
-    })
   })
 
   it('Enabled/Disabled Network', function (done) {
     const network = new NetWork()
-    NetWork.enabled = false
-
-    const onload = jasmine.createSpy('onload')
-    const onerror = jasmine.createSpy('onerror')
-
-    network.open('get', 'http://example.com')
-    network.onload = onload
-    network.onerror = function () {
-      onerror()
-      function checkDone () {
-        // unmatched count
-        expect(calls.unmatched.length).toBe(1)
-        expect(calls.matched.length).toBe(0)
-
-        // call onerror once
-        expect(onerror.calls.count()).toEqual(1)
-        expect(onload).not.toHaveBeenCalled()
-        done()
-      }
-      setTimeout(checkDone, 0)
-    }
+    network.open('get', SuceessURL)
     network.send()
-    expect(onload).not.toHaveBeenCalled()
-    expect(onerror).not.toHaveBeenCalled()
+    checkCallbackEvent(network, done.fail, done)
   })
 
-  it('Match Rule', function (done) {
-    const onerror = jasmine.createSpy('onerror')
-    const onload = jasmine.createSpy('onload')
-    const method = 'get'
-    const domain = 'http://example.com'
+  describe('Headers', function () {
+    it('Set & not throw error', function () {
+      const network = new NetWork()
 
-    const response = {
-      status: 400,
-      text: 'word',
-    }
-    const rules = Manage.createRules(domain)
-    const r = rules.when(method, '/demo')
-    r.respond(response.status, response.text)
+      network.setRequestHeader('key', 'value')
+      network.setRequestHeader('key2', 'value2')
 
-    const network = new NetWork()
+      expect(network.headers).toEqual({
+        key: 'value',
+        key2: 'value2',
+      })
+    })
+    // 没想好怎么测
+    // xit('Send With headers', function () {
+    // })
+  })
 
-    network.onerror = function () {
-      onerror()
-      done.fail('Not Match Rule')
-    }
-    network.onload = function () {
-      onload()
-      const xhr = this
+  describe('Method open ', function () {
+    it('only can call once', function () {
+      const network = new NetWork()
+      // open
+      network.open('get', 'some')
+      network.open('post', 'other')
+      expect(network.method).toEqual('get')
+      expect(network.url).toEqual('some')
+    })
+  })
 
-      function checkDone () {
-        const status = xhr.status
-        const responseText = xhr.response
-
-        expect(calls.unmatched.length).toBe(0)
-        expect(calls.matched.length).toBe(1)
-
-        expect(status).toEqual(response.status)
-        expect(responseText).toEqual(response.text)
-
-        expect(onload.calls.count()).toEqual(1)
-        expect(onerror).not.toHaveBeenCalled()
+  describe('Method send', function () {
+    it('call twice, only first can send', function () {
+      const network = new NetWork()
+      network.open('get', 'http://example.com')
+      network.send('is string')
+      network.send('other is string')
+      expect(network.params).toEqual('is string')
+      expect(network.data).toEqual('is string')
+    })
+    // xit('send with data', function () {
+    //   // 没想好怎么测 0.0
+    // })
+    it('sync call onload', function (done) {
+      NetWork.enabled = true
+      const network = new NetWork()
+      network.open('get', SuceessURL)
+      checkCallbackEvent(network, function () {
+        expect(network.status).toBeGreaterThan(199) // >= 200
+        expect(network.response).toBeDefined()
         done()
-      }
-      setTimeout(checkDone, 0)
-    }
+      }, done.fail)
+    })
+    it('sync call onerror', function (done) {
+      // can't send xhr, NetWork.enabled = false
+      const network = new NetWork()
+      network.open('get', SuceessURL)
+      checkCallbackEvent(network, done.fail, done)
+    })
+    it('sync with rule', function (done) {
+      HttpMock(SuceessURL).when('get', '/').respond(200, 'this is response')
+      const network = new NetWork()
+      network.open('get', SuceessURL)
+      checkCallbackEvent(network, function () {
+        expect(network.status).toEqual(200) // >= 200
+        expect(network.response).toEqual('this is response')
+        done()
+      }, done.fail)
+    })
+  })
 
-    network.open('get', 'http://example.com/demo')
+  describe('Method abort', function () {
+    it('not throw error before call send', function () {
+      const network = new NetWork()
+      network.abort()
+      network.open('get', 'http://example.com')
+      network.abort()
+    })
+    it('sync call onerror', function (done) {
+      NetWork.enabled = true
+      const network = new NetWork()
+      network.open('get', SuceessURL)
+      checkCallbackEvent(network, done.faild, done)
+      network.abort()
+    })
+  })
+
+  describe('Compatible', function () {
+    const CompatibleList = [
+      'getAllResponseHeaders',
+      'getResponseHeader',
+    ]
+    const network = new NetWork()
+    CompatibleList.forEach(function (c) {
+      it(c, function () {
+        expect(network[c]).not.toThrow()
+      })
+    })
+  })
+
+  it('readyState', function () {
+    const network = new NetWork()
+    expect(network.readyState).toEqual(0)
+    network.open('get', SuceessURL)
+    expect(network.readyState).toEqual(1)
     network.send()
-
-    expect(onload).not.toHaveBeenCalled()
-    expect(onerror).not.toHaveBeenCalled()
+    expect(network.readyState).toEqual(2)
+    network.abort()
+    // expect(network.readyState).toEqual(4)
   })
 })

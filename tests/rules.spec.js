@@ -120,7 +120,7 @@ describe('Rule', function () {
     })
   })
 
-  describe('GetResponse', function () {
+  describe('Set,Get Response', function () {
     it('arguments is string', function () {
       const text = 'this is response'
 
@@ -143,6 +143,7 @@ describe('Rule', function () {
     })
   })
 })
+
 describe('Rules', function () {
   const domain = 'http://example.com'
   const otherDomain = 'http://22.example.com'
@@ -155,6 +156,7 @@ describe('Rules', function () {
       expect(rules.isMatch(createHttpConfig('get', `${domain}/demo.html`))).toBeTruthy()
       expect(rules.isMatch(createHttpConfig('get', otherDomain))).toBeFalsy()
     })
+
     xit('constructor: can host with some path', function () {
       const rules = new Rules(`${domain}/demo`)
 
@@ -169,6 +171,7 @@ describe('Rules', function () {
       expect(rules.isMatch({ location: { href: domain } })).toBeFalsy()
       expect(rules.isMatch({ location: { href: otherDomain } })).toBeFalsy()
     })
+
     it('constructor: can regexp', function () {
       const domainRegexp = /example\.com/
       const rules = new Rules(domainRegexp)
@@ -189,7 +192,7 @@ describe('Rules', function () {
         return new Rules()
       }).toThrow()
     })
-    it('https, http', function () {
+    it('hostname with https, http', function () {
       const rules = new Rules('https://example.com')
       expect(rules.isMatch(createHttpConfig('get', 'https://example.com/demo.html'))).toBeTruthy()
       expect(rules.isMatch(createHttpConfig('get', 'http://example.com'))).toBeFalsy()
@@ -206,8 +209,12 @@ describe('Rules', function () {
 
   it('findMatchRule', function () {
     const rules = new Rules(domain)
-    const rule = rules.when('get', path)
+    rules.when('get', path)
     const r = rules.findMatchRule(createHttpConfig('get', `${domain}${path}`))
-    expect(r).toBe(rule)
+    expect(r).toBeDefined()
+    const ro = rules.findMatchRule(createHttpConfig('get', `${otherDomain}${path}`))
+    expect(ro).toBeUndefined()
+    const rp = rules.findMatchRule(createHttpConfig('get', `${domain}${path}/other`))
+    expect(rp).toBeUndefined()
   })
 })

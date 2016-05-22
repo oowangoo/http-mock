@@ -1,40 +1,47 @@
 import Mock from 'mock'
+
+function checkCallbackEvent (mock, onload, onerror) {
+  const spyOnload = jasmine.createSpy('spyOnload')
+  const spyOnerror = jasmine.createSpy('spyOnerror')
+  mock.onload = function () {
+    spyOnload()
+
+    expect(spyOnload.calls.count()).toEqual(1)
+    expect(spyOnerror).not.toHaveBeenCalled()
+    expect(mock).toBe(this)
+
+    onload && setTimeout(onload, 5)
+  }
+  mock.onerror = function () {
+    spyOnerror()
+
+    expect(spyOnerror.calls.count()).toEqual(1)
+    expect(spyOnload).not.toHaveBeenCalled()
+
+    expect(mock).toBe(this)
+    onerror && setTimeout(onerror, 5)
+  }
+  mock.send()
+  expect(spyOnload).not.toHaveBeenCalled()
+  expect(spyOnerror).not.toHaveBeenCalled()
+}
+
+function isResponseToEqual ({ status, text }, mock) {
+  expect(status).toEqual(mock.status)
+  expect(text).toEqual(mock.response)
+}
+
 describe('Mock', function () {
   describe('Send', function () {
-    function isResponseToEqual ({ status, text }, mock) {
-      expect(status).toEqual(mock.status)
-      expect(text).toEqual(mock.response)
-    }
-
     function createIt (response) {
       return function (done) {
         const mock = new Mock(response.status, response.text)
-        const onload = jasmine.createSpy('onload')
-        const onerror = jasmine.createSpy('onerror')
-
         mock.open()
 
-        mock.onload = function () {
-          onload()
-          const m = this
-
-          function checkDone () {
-            expect(m).toBe(mock)
-            expect(onload.calls.count()).toEqual(1)
-            expect(onerror).not.toHaveBeenCalled()
-            isResponseToEqual(response, m)
-            done()
-          }
-          // sync done
-          setTimeout(checkDone, 0)
-        }
-        mock.onerror = function () {
-          onerror()
-          done.fail('call onerror')
-        }
-        mock.send()
-        expect(onload).not.toHaveBeenCalled()
-        expect(onerror).not.toHaveBeenCalled()
+        checkCallbackEvent(mock, function () {
+          isResponseToEqual(response, mock)
+          done()
+        }, done.fail)
       }
     }
 
@@ -50,33 +57,9 @@ describe('Mock', function () {
 
   it('Abort, call onerror', function (done) {
     const mock = new Mock(200, 'it not work', 1000)
-    const onload = jasmine.createSpy('onload')
-    const onerror = jasmine.createSpy('onerror')
     mock.open()
-
-    mock.onload = function () {
-      onload()
-      done.fail('call onload')
-    }
-    mock.onerror = function () {
-      onerror()
-      function checkDone () {
-        expect(onerror.calls.count()).toEqual(1)
-        expect(onload).not.toHaveBeenCalled()
-        done()
-      }
-      setTimeout(checkDone, 0)
-    }
-
-    mock.send()
-
-    // abort
-    // setTimeout(function () {
+    checkCallbackEvent(mock, done.fail, done)
     mock.abort()
-    // }, 0)
-
-    expect(onload).not.toHaveBeenCalled()
-    expect(onerror).not.toHaveBeenCalled()
   })
   it('Abort Before Send, do nothing', function () {
     const mock = new Mock(200, 'it not work', 1000)

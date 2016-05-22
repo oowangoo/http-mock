@@ -22,7 +22,7 @@ export function formatUrl (url) {
   if (!hostname) {
     throw new Error('bad url')
   }
-  if (!pathname) {
+  if (!pathname || pathname.length === 1) { // ex: flow.ci, flow.ci/
     pathname = '/'
   } else if (pathname[pathname.length - 1] === '/') {
     // 移除末尾 /
@@ -42,7 +42,8 @@ export function formatUrl (url) {
     location: {
       pathname,
       href,
-      hostname
+      hostname,
+      query,
     },
     params,
     headrs

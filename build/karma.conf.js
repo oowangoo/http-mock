@@ -50,7 +50,7 @@ const karmaConfig = {
 
 // isparta 与 eslint 有冲突. isparta 编出后的文件会跑 eslint， 暂时不进行覆盖率检查
 // add coverage if enabled
-if (config.coverage_enabled) {
+if (false && config.coverage_enabled) {
   karmaConfig.reporters.push('coverage');
   karmaConfig.webpack.module.preLoaders = [{
     test: /\.(js|jsx)$/,

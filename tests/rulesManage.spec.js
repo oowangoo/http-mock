@@ -12,10 +12,12 @@ describe('rulesManage', function () {
     const rs = Manage.getAllRules()
     expect(rs.length).toBe(1)
     expect(rs[0]).toBe(rules)
+    Manage.reset()
+    expect(Manage.getAllRules().length).toBe(0)
   })
   it('findRule', function () {
     const rules = Manage.createRules('http://example.com')
-    const r = rules.when('get', '/demo')
+    rules.when('get', '/demo')
     const httpConfig = {
       method: 'get',
       location: {
@@ -25,6 +27,6 @@ describe('rulesManage', function () {
       },
     }
     const rule = Manage.findRule(httpConfig)
-    expect(rule).toBe(r)
+    expect(rule).toBeDefined()
   })
 })
