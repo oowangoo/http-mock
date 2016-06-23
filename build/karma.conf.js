@@ -10,15 +10,16 @@ const paths = config.paths
 const karmaConfig = {
   basePath: '../', // project root in relation to bin/karma.js
   files: [
+    './node_modules/phantomjs-polyfill/bind-polyfill.js',
     `./${config.tests}/index.js`
   ],
   singleRun: !argv.watch,
   frameworks: ['jasmine'],
   reporters: ['spec'], // ['multibrowser-summary'],
   preprocessors: {
-    [`${config.tests}/**/*.js`]: ['webpack']
+    [`${config.tests}/index.js`]: ['webpack']
   },
-  browsers: ['Chrome'],
+  browsers: ['PhantomJS'],
   webpack: {
     resolve: webpackConfig.resolve,
     plugins: webpackConfig.plugins,
@@ -27,7 +28,7 @@ const karmaConfig = {
       preLoaders: webpackConfig.module.preLoaders,
       loaders: webpackConfig.module.loaders.concat([
         {
-          test: /\.spec\.js$/,
+          test: /\.js$/,
           loaders: ['babel-loader', 'eslint'],
           include: paths.base('tests')
         }

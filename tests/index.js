@@ -1,6 +1,6 @@
 // var testsContext = require.context('./', true, /\.spec\.js$/)
 // testsContext.keys().forEach(testsContext)
-
+require('babel-polyfill')
 const files = [
   './calls.spec.js',
   './mock.spec.js',
